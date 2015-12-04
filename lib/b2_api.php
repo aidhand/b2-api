@@ -53,7 +53,7 @@ trait b2api
     curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Receive server response
     $server_output = curl_exec($session);
     curl_close ($session);
-    $auth = json_decode($server_output, true);
+    $this->auth = json_decode($server_output, true);
     if ($http_code != 200) {
         return array(
             'error' => $error
