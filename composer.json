@@ -1,5 +1,5 @@
 {
-  "name": "OhioValleyPHP/backblaze-b2-api-wrapper",
+  "name": "ohiovalleyphp/backblaze-b2-api-wrapper",
   "description": "Backblaze B2 API bindings",
   "keywords": [
     "backblaze",
