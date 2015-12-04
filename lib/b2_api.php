@@ -27,7 +27,7 @@ trait b2api
     }
   }
   
-  public function setEmail($account_id)
+  public function setAccount($account_id)
   {
       $this->account_id = $account_id;
   }
