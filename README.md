@@ -1,2 +1,4 @@
-# backblaze-b2-api-wrapper
-For use with the Backblaze B2 Cloud Storage API
+# Backblaze B2 API Wrapper
+Very excited about the new cloud storage service from Backblaze.
+
+This wrapper is in active development.
