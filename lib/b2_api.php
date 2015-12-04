@@ -53,12 +53,13 @@ trait b2api
     curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Receive server response
     $server_output = curl_exec($session);
     curl_close ($session);
+    $auth = json_decode($server_output, true);
     if ($http_code != 200) {
         return array(
             'error' => $error
         );
     } else {
-        return json_decode($server_output, true);;
+        return json_decode($server_output, true);
     }
   }
   
@@ -66,9 +67,7 @@ trait b2api
      * GLOBAL API CALL
      * HTTP POST a specific task with the supplied data
   */
-  private function http_post($auth, $data)
+  private function http_post($data)
   {
-    $api_url = $auth["apiUrl"];
-    $auth_token = $auth["authorizationToken"];
   }  
 }
