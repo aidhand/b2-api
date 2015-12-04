@@ -1,0 +1,32 @@
+{
+  "name": "OhioValleyPHP/backblaze-b2-api-wrapper",
+  "description": "Backblaze B2 API bindings",
+  "keywords": [
+    "backblaze",
+    "b2",
+    "cloud storage",
+    "api"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Dan Rovito",
+      "email": "danrovito@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.3",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*"
+  },
+  "autoload": {
+    "psr-4": { "OhioValleyPHP\\" : "lib/" }
+  },
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.0-dev"
+    }
+  }
+}
