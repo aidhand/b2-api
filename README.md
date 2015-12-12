@@ -32,8 +32,7 @@ You need to pass your Account ID and Application key from your B2 account to get
 
 ```php
 $b2 = new b2_api;
-$response = $b2->
-b2_authorize_account("ACCOUNTID", "APPLICATIONKEY");
+$response = $b2->b2_authorize_account("ACCOUNTID", "APPLICATIONKEY");
 return $response;
 ```
 
