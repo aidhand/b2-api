@@ -1,6 +1,8 @@
 #Backblaze B2 API Wrapper by [OhioValleyPHP](https://www.ohiovalleyphp.com)
 This is a PHP wrapper for the [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html) API.
 
+This wrapper is in active development.
+
 ##From the B2 Website
 > B2 Cloud Storage is a cloud service for storing files in the cloud.
 > Files are available for download at any time, either through the API
