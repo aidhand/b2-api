@@ -20,6 +20,11 @@
     "ext-json": "*",
     "ext-mbstring": "*"
   },
+  "autoload": {
+    "classmap" : [
+      "b2_api.php"
+    ]
+  },
   "minimum-stability": "dev",
   "extra": {
     "branch-alias": {
