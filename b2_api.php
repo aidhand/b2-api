@@ -14,10 +14,10 @@
         //Account Authorization
         public function b2_authorize_account($acct_id, $app_key)
         {
-            $account_id      = $acct_id;
-            $application_key = $app_key;
-            $credentials     = base64_encode($account_id . ":" . $application_key);
-            $url             = "https://api.backblaze.com/b2api/v1/b2_authorize_account";
+            $this->account_id = $acct_id;
+            $application_key  = $app_key;
+            $credentials      = base64_encode($this->account_id . ":" . $application_key);
+            $url              = "https://api.backblaze.com/b2api/v1/b2_authorize_account";
 
             $session = curl_init($url);
 
@@ -36,6 +36,10 @@
 
             curl_close($session);
 
+            $json            = json_decode($http_result);
+            $this->apiUrl    = $json->apiUrl;
+            $this->authToken = $json->authorizationToken;
+
             //Print result code if it doesn't equal 200
             if ($http_code != 200)
             {
@@ -50,11 +54,11 @@
         }
 
         //Create Bucket
-        public function b2_create_bucket($acct_id, $api_auth_url, $api_auth_token, $api_bucket_name, $bucket_type)
+        public function b2_create_bucket($api_bucket_name, $bucket_type)
         {
-            $account_id  = $acct_id; // Obtained from your B2 account page
-            $api_url     = $api_auth_url; // From b2_authorize_account call
-            $auth_token  = $api_auth_token; // From b2_authorize_account call
+            $account_id  = $this->account_id; // Obtained from your B2 account page
+            $api_url     = $this->apiUrl; // From b2_authorize_account call
+            $auth_token  = $this->authToken; // From b2_authorize_account call
             $bucket_name = $api_bucket_name; // 6 char min, 50 char max: letters, digits, - and _
             $bucket_type = $bucket_type; // Either allPublic or allPrivate
 
@@ -75,8 +79,6 @@
             //$server_output = curl_exec($session); // Let's do this!
 
             $http_result = curl_exec($session); //results
-            $error       = curl_error($session); //Error return
-            $http_code   = curl_getinfo($session, CURLINFO_HTTP_CODE); //Result type: 200, 404, 500, etc.
 
             curl_close($session); // Clean up
 

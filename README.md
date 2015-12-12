@@ -53,22 +53,14 @@ The Authorization Token will change everytime this function is used.
 
 ###Create a Bucket
 
-This part requires that you use the response received from the Authorization instructions above.  You'll need to follow the requirements from B2 for creating a bucket.  The request must contain the following:
-
- - Authorization
- - accountId
- - bucketName
- - bucketType (Either "allPublic", meaning that files in this bucket can be downloaded by anybody, or "allPrivate", meaning that you need a bucket authorization token to download files
-
 ####Sample Code
 
-I recommend retrieving your accountId, apiUrl, and authorizationToken from the Authorization function above.
+You can pass all the information you need to create a bucket by using this code
 
-You can pass all the information you need to create a bucket by using this code (Remember, we are using values returned from the Authorization function from above):
+BUCKETTYPE can be "allPrivate" or "allPublic"
 
 ```php
-$new_bucket = $b2->b2_create_bucket(ACCOUNTID, APIURL, AUTHORIZATIONTOKEN, YOURBUCKETNAME, BUCKETTYPE);
-return json_decode($new_bucket);
+$new_bucket = $b2->b2_create_bucket(YOURBUCKETNAME, BUCKETTYPE);
 ```
 
 You will receive a response similar to the following:
