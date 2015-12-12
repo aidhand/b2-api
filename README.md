@@ -60,10 +60,12 @@ This part requires that you use the response received from the Authorization ins
 
 ####Sample Code
 
+I recommend retrieving your accountId, apiUrl, and authorizationToken from the Authorization function above.
+
 You can pass all the information you need to create a bucket by using this code (Remember, we are using values returned from the Authorization function from above):
 
 ```php
-$new_bucket = $b2->b2_create_bucket($data->accountId, $data->apiUrl, $data->authorizationToken, "YOURBUCKETNAME", "BUCKETTYPE");
+$new_bucket = $b2->b2_create_bucket(ACCOUNTID, APIURL, AUTHORIZATIONTOKEN, YOURBUCKETNAME, BUCKETTYPE);
 return json_decode($new_bucket);
 ```
 
