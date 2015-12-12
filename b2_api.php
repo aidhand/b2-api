@@ -72,6 +72,7 @@
 
             curl_setopt($session, CURLOPT_POST, true); // HTTP POST
             curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
+            //$server_output = curl_exec($session); // Let's do this!
 
             $http_result = curl_exec($session); //results
             $error       = curl_error($session); //Error return
@@ -79,14 +80,6 @@
 
             curl_close($session); // Clean up
 
-            //Print result code if it doesn't equal 200
-            if ($http_code != 200)
-            {
-                return print $http_code;
-            } else
-            {
-                //Return results
-                return $http_result;
-            }
+            return json_encode($http_result); // Tell me about the rabbits, George!
         }
     }
