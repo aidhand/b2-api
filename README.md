@@ -39,7 +39,7 @@ return $response;
 
 You will receive a response similar to the following:
 
-```json
+```javascript
 {
 "accountId": "YOUR_ACCOUNT_ID",
 "apiUrl": "https://api900.backblaze.com",
