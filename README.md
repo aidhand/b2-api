@@ -46,3 +46,44 @@ You will receive a response similar to the following:
 "downloadUrl": "https://f900.backblaze.com"
 }
 ```
+
+The Authorization Token will change everytime this function is used.
+
+###Create a Bucket
+
+This part requires that you use the response received from the Authorization instructions above.  You'll need to follow the requirements from B2 for creating a bucket.  The request must contain the following:
+
+ - Authorization
+ - accountId
+ - bucketName
+ - bucketType (Either "allPublic", meaning that files in this bucket can be downloaded by anybody, or "allPrivate", meaning that you need a bucket authorization token to download files
+
+####Sample Code
+
+You can pass all the information you need to create a bucket by using this code (Remember, we are using values returned from the Authorization function from above):
+
+```php
+$new_bucket = $b2->b2_create_bucket($data->accountId, $data->apiUrl, $data->authorizationToken, "YOURBUCKETNAME", "BUCKETTYPE");
+return json_decode($new_bucket);
+```
+
+You will receive a response similar to the following:
+
+```javascript
+{
+"bucketId" : "4a48fe8875c6214145260818",
+"accountId" : "010203040506",
+"bucketName" : "any_name_you_pick",
+"bucketType" : "allPrivate"
+}
+```
+
+If the bucket name is in use by anyone else you will receive a response similar to this:
+
+```javascript
+{
+"code": "duplicate_bucket_name",
+"message": "Bucket name is already in use.",
+"status": 400
+}
+```
