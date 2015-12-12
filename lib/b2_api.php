@@ -1,46 +1,25 @@
 <?php
 
-namespace b2apiwrapper;
+/**
+* Backblaze B2 API Wrapper
+* 
+* @author Dan Rovito
+* @copyright OhioValleyPHP.com
+* @version dev-master
+*
+*/
 
-
-trait b2api
+class b2_api
 {
-  //The URL of the API
-  private static $url = "https://api.backblaze.com/b2api/v1/b2_authorize_account";
-  
-  //Stores the api key
-  private $account_id;
-  private $application_key;
-  
-  //Timeout for the API requests in seconds
-  const TIMEOUT = 5;
-  
-  /**
-     * Make a new instance of the API client
-  */
-  public function __construct()
+
+  //Account Authorization
+  public function b2_authorize_account($acctt_id, $app_key)
   {
-    $parameters = func_get_args();
-      //User Request
-      $this->account_id     = $parameters[0];
-      $this->application_key = $parameters[1];
-    }
-  }
-  
-  public function setAccount($account_id)
-  {
-      $this->account_id = $account_id;
-  }
-  public function setToken($application_key)
-  {
-      $this->application_key = $application_key;
-  }
-  
-  //Authorize Account
-  public function b2_authorize_account()
-  {
+    $account_id = $acctt_id; 
+    $application_key = $app_key; 
     $credentials = base64_encode($account_id . ":" . $application_key);
-      
+    $url = "https://api.backblaze.com/b2api/v1/b2_authorize_account";
+
     $session = curl_init($url);
 
     // Add headers
@@ -48,26 +27,27 @@ trait b2api
     $headers[] = "Accept: application/json";
     $headers[] = "Authorization: Basic " . $credentials;
     curl_setopt($session, CURLOPT_HTTPHEADER, $headers);  // Add headers
-    
+
     curl_setopt($session, CURLOPT_HTTPGET, true);  // HTTP GET
     curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Receive server response
-    $server_output = curl_exec($session);
+
+    $http_result = curl_exec($session); //results
+    $error       = curl_error($session); //Error return
+    $http_code   = curl_getinfo($session, CURLINFO_HTTP_CODE); //Result type: 200, 404, 500, etc.
+
     curl_close ($session);
-    $auth = json_decode($server_output, true);
+
+    //Print result code if it doesn't equal 200
     if ($http_code != 200) {
-        return array(
-            'error' => $error
-        );
-    } else {
-        return json_decode($server_output, true);
+      return print $http_code;
+    } 
+    else {
+      //Return results 
+      return $http_result;
     }
+
+
   }
-  
-  /**
-     * GLOBAL API CALL
-     * HTTP POST a specific task with the supplied data
-  */
-  private function http_post($data)
-  {
-  }  
 }
+
+?>
