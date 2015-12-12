@@ -20,9 +20,6 @@
     "ext-json": "*",
     "ext-mbstring": "*"
   },
-  "autoload": {
-    "psr-4": { "OhioValleyPHP\\" : "lib/" }
-  },
   "minimum-stability": "dev",
   "extra": {
     "branch-alias": {
