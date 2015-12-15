@@ -120,4 +120,40 @@
         {
             
         }
+        
+        //Hide File
+        public function b2_hide_file()
+        {
+            
+        }
+        
+        //List buckets
+        public function b2_list_buckets()
+        {
+            
+        }
+        
+        //List file names
+        public function b2_list_file_names()
+        {
+            
+        }
+        
+        //List file versions
+        public function b2_list_file_versions()
+        {
+            
+        }
+        
+        //List update bucket
+        public function b2_update_bucket()
+        {
+            
+        }
+        
+        //List upload file
+        public function b2_upload_file()
+        {
+            
+        }
     }
