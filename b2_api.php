@@ -84,4 +84,10 @@
 
             return json_encode($http_result); // Tell me about the rabbits, George!
         }
+        
+        //Delete Bucket
+        public function b2_delete_bucket()
+        {
+            
+        }
     }
