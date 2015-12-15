@@ -90,4 +90,34 @@
         {
             
         }
+        
+        //Delete file version
+        public function b2_delete_file_version()
+        {
+            
+        }
+        
+        //Download file by ID
+        public function b2_download_file_by_id()
+        {
+            
+        }
+        
+        //Download file by Name
+        public function b2_download_file_by_name()
+        {
+            
+        }
+        
+        //Get File Info
+        public function b2_get_file_info()
+        {
+            
+        }
+        
+        //Get upload URL
+        public function b2_get_upload_url()
+        {
+            
+        }
     }
