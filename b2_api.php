@@ -76,7 +76,6 @@
 
             curl_setopt($session, CURLOPT_POST, true); // HTTP POST
             curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
-            //$server_output = curl_exec($session); // Let's do this!
 
             $http_result = curl_exec($session); //results
 
@@ -86,15 +85,64 @@
         }
         
         //Delete Bucket
-        public function b2_delete_bucket()
+        public function b2_delete_bucket($api_bucket_id)
         {
+            $account_id  = $this->account_id; // Obtained from your B2 account page
+            $api_url     = $this->apiUrl; // From b2_authorize_account call
+            $auth_token  = $this->authToken; // From b2_authorize_account call
+            $bucket_id = $api_bucket_id;  // The ID of the bucket you want to delete
+            
+            $session = curl_init($api_url .  "/b2api/v1/b2_delete_bucket");
+            
+            // Add post fields
+            $data = array("accountId" => $account_id, "bucketId" => $bucket_id);
+            $post_fields = json_encode($data);
+            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields); 
+            
+            // Add headers
+            $headers = array();
+            $headers[] = "Authorization: " . $auth_token;
+            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
+            
+            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
+            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
+            
+            $http_result = curl_exec($session); //results
+
+            curl_close($session); // Clean up
+
+            return json_encode($http_result); // Tell me about the rabbits, George!
             
         }
         
         //Delete file version
-        public function b2_delete_file_version()
+        public function b2_delete_file_version($api_file_id, $api_file_name)
         {
+            $api_url     = $this->apiUrl; // From b2_authorize_account call
+            $auth_token  = $this->authToken; // From b2_authorize_account call
+            $file_id     = $api_file_id;  // The ID of the file you want to delete
+            $file_name   = $api_file_name; // The file name of the file you want to delete
             
+            $session = curl_init($api_url .  "/b2api/v1/b2_delete_file_version");
+            
+            // Add post fields
+            $data = array("fileId" => $file_id, "fileName" => $file_name);
+            $post_fields = json_encode($data);
+            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields); 
+            
+            // Add headers
+            $headers = array();
+            $headers[] = "Authorization: " . $auth_token;
+            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
+            
+            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
+            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
+            
+            $http_result = curl_exec($session); //results
+
+            curl_close($session); // Clean up
+
+            return json_encode($http_result); // Tell me about the rabbits, George!
         }
         
         //Download file by ID
