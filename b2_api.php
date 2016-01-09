@@ -158,9 +158,31 @@
         }
         
         //Get File Info
-        public function b2_get_file_info()
+        public function b2_get_file_info($api_file_id)
         {
+            $api_url     = $this->apiUrl; // From b2_authorize_account call
+            $auth_token  = $this->authToken; // From b2_authorize_account call
+            $file_id = $api_file_id; // The id of the file
+            $session = curl_init($api_url .  "/b2api/v1/b2_get_file_info");
             
+            // Add post fields
+            $data = array("fileId" => $file_id);
+            $post_fields = json_encode($data);
+            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields); 
+            
+            // Add headers
+            $headers = array();
+            $headers[] = "Authorization: " . $auth_token;
+            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
+            
+            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
+            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
+            
+            $http_result = curl_exec($session); //results
+
+            curl_close($session); // Clean up
+
+            return json_encode($http_result); // Tell me about the rabbits, George!
         }
         
         //Get upload URL
