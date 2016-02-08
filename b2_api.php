@@ -47,7 +47,7 @@
             } else
             {
                 //Return results
-                return $http_result;
+                return json_decode($http_result);
             }
 
 
@@ -81,7 +81,7 @@
 
             curl_close($session); // Clean up
 
-            return $http_result; // Tell me about the rabbits, George!
+            return json_decode($http_result); // Tell me about the rabbits, George!
         }
         
         //Delete Bucket
@@ -111,7 +111,7 @@
 
             curl_close($session); // Clean up
 
-            return $http_result; // Tell me about the rabbits, George!
+            return json_decode($http_result); // Tell me about the rabbits, George!
             
         }
         
@@ -142,7 +142,7 @@
 
             curl_close($session); // Clean up
 
-            return $http_result; // Tell me about the rabbits, George!
+            return json_decode($http_result); // Tell me about the rabbits, George!
         }
         
         //Download file by ID
@@ -182,7 +182,7 @@
 
             curl_close($session); // Clean up
 
-            return $http_result; // Tell me about the rabbits, George!
+            return json_decode($http_result); // Tell me about the rabbits, George!
         }
         
         //Get upload URL
@@ -214,7 +214,7 @@
             $json              = json_decode($http_result);
             $this->uploadToken = $json->authorizationToken; // Upload auth token
 
-            return $http_result; // Tell me about the rabbits, George!
+            return json_decode($http_result); // Tell me about the rabbits, George!
         }
         
         //Hide File
@@ -279,6 +279,6 @@
 
             curl_close($session); // Clean up
 
-            return $http_result; // Tell me about the rabbits, George!
+            return json_decode($http_result); // Tell me about the rabbits, George!
         }
     }
