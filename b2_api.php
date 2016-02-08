@@ -30,7 +30,7 @@
             curl_setopt($session, CURLOPT_HTTPGET, true);  // HTTP GET
             curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Receive server response
 
-            $http_result = curl_exec($session); //results
+            $http_result = curl_exec($session); // Let's do this!
             $error       = curl_error($session); //Error return
             $http_code   = curl_getinfo($session, CURLINFO_HTTP_CODE); //Result type: 200, 404, 500, etc.
 
@@ -77,11 +77,11 @@
             curl_setopt($session, CURLOPT_POST, true); // HTTP POST
             curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
 
-            $http_result = curl_exec($session); //results
+            $http_result = curl_exec($session); // Let's do this!
 
             curl_close($session); // Clean up
 
-            return json_encode($http_result); // Tell me about the rabbits, George!
+            return $http_result; // Tell me about the rabbits, George!
         }
         
         //Delete Bucket
@@ -107,11 +107,11 @@
             curl_setopt($session, CURLOPT_POST, true); // HTTP POST
             curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
             
-            $http_result = curl_exec($session); //results
+            $http_result = curl_exec($session); // Let's do this!
 
             curl_close($session); // Clean up
 
-            return json_encode($http_result); // Tell me about the rabbits, George!
+            return $http_result; // Tell me about the rabbits, George!
             
         }
         
@@ -138,11 +138,11 @@
             curl_setopt($session, CURLOPT_POST, true); // HTTP POST
             curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
             
-            $http_result = curl_exec($session); //results
+            $http_result = curl_exec($session); // Let's do this!
 
             curl_close($session); // Clean up
 
-            return json_encode($http_result); // Tell me about the rabbits, George!
+            return $http_result; // Tell me about the rabbits, George!
         }
         
         //Download file by ID
@@ -178,7 +178,7 @@
             curl_setopt($session, CURLOPT_POST, true); // HTTP POST
             curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
             
-            $http_result = curl_exec($session); //results
+            $http_result = curl_exec($session); // Let's do this!
 
             curl_close($session); // Clean up
 
