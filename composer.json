@@ -1,14 +1,17 @@
 {
-  "name": "ohiovalleyphp/backblaze-b2-api-wrapper",
-  "description": "Backblaze B2 API bindings",
+  "name": "UKn0Me/backblaze-b2-api-wrapper",
+  "description": "Backblaze B2 API wrapper for PHP",
   "keywords": [
     "backblaze",
     "b2",
-    "cloud storage",
     "api"
   ],
   "license": "MIT",
   "authors": [
+    {
+      "name": "Aidhan Dossel",
+      "email": "me@aidhan.net"
+    }
     {
       "name": "Dan Rovito",
       "email": "danrovito@gmail.com"
@@ -26,9 +29,5 @@
     ]
   },
   "minimum-stability": "dev",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.0-dev"
-    }
   }
 }

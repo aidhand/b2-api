@@ -1,10 +1,10 @@
 <?php
 
     /**
-     * Backblaze B2 API Wrapper
+     * Backblaze B2 API wrapper for PHP
      *
-     * @author Dan Rovito
-     * @copyright OhioValleyPHP.com
+     * @author Aidhan Dossel
+     * @copyright aidhan.net
      * @version dev-master
      *
      */
