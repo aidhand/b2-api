@@ -1,24 +1,21 @@
-#Backblaze B2 API Wrapper by [Dan Rovito](https://www.danrovito.com)
+#Backblaze B2 PHP API Wrapper 
+Forked by [Aidhan Dossel](https://aidhan.net/)
+Originally by [Dan Rovito](https://www.danrovito.com)
 This is a PHP wrapper for the [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html) API.
 
 This wrapper is in active development.
 
-##From the B2 Website
-> B2 Cloud Storage is a cloud service for storing files in the cloud.
-> Files are available for download at any time, either through the API
-> or through a browser-compatible URL.
-
 ##Usage
 
-All responses are JSON
+All responses are returned as an array
 
 Add to your composer.json
 
 ```php
-  "ohiovalleyphp/backblaze-b2-api-wrapper": "dev-master"
+  "ukn0me/b2-api": "dev-master"
 ```
 
-##Below you'll find more information on how to carry out the specific functions of the API wrapper.
+##Functions.
 
 ###Authorization
 
@@ -38,48 +35,36 @@ $response = $b2->b2_authorize_account("ACCOUNTID", "APPLICATIONKEY");
 return $response;
 ```
 
-You will receive a response similar to the following:
+###Other calls
 
-```javascript
-{
-"accountId": "YOUR_ACCOUNT_ID",
-"apiUrl": "https://api900.backblaze.com",
-"authorizationToken": "2_20150807002553_443e98bf57f978fa58c284f8_24d25d99772e3ba927778b39c9b0198f412d2163_acct",
-"downloadUrl": "https://f900.backblaze.com"
-}
-```
+Currently only the following API calls are supported, see the [B2 API](https://www.backblaze.com/b2/docs/) for more information about each call.
 
-The Authorization Token will change everytime this function is used.
-
-###Create a Bucket
-
-####Sample Code
-
-You can pass all the information you need to create a bucket by using this code
-
-BUCKETTYPE can be "allPrivate" or "allPublic"
-
+#### b2_create_bucket
 ```php
-$new_bucket = $b2->b2_create_bucket(YOURBUCKETNAME, BUCKETTYPE);
+b2_create_bucket($api_bucket_name, $bucket_type)
 ```
 
-You will receive a response similar to the following:
-
-```javascript
-{
-"bucketId" : "4a48fe8875c6214145260818",
-"accountId" : "010203040506",
-"bucketName" : "any_name_you_pick",
-"bucketType" : "allPrivate"
-}
+#### b2_delete_bucket
+```php
+b2_delete_bucket($api_bucket_id)
 ```
 
-If the bucket name is in use by anyone else you will receive a response similar to this:
+#### b2_delete_file_version
+```php
+b2_delete_file_version($api_file_id, $api_file_name)
+```
 
-```javascript
-{
-"code": "duplicate_bucket_name",
-"message": "Bucket name is already in use.",
-"status": 400
-}
+#### b2_get_file_info
+```php
+b2_get_file_info($api_file_id)
+```
+
+#### b2_get_upload_url
+```php
+b2_get_upload_url($api_bucket_id)
+```
+
+#### b2_upload_file
+```php
+b2_upload_file($upload_url, $file_path)
 ```
