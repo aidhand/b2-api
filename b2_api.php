@@ -182,7 +182,7 @@
 
             curl_close($session); // Clean up
 
-            return json_encode($http_result); // Tell me about the rabbits, George!
+            return $http_result; // Tell me about the rabbits, George!
         }
         
         //Get upload URL
