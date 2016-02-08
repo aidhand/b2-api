@@ -186,9 +186,35 @@
         }
         
         //Get upload URL
-        public function b2_get_upload_url()
+        public function b2_get_upload_url($api_bucket_id)
         {
+            $api_url     = $this->apiUrl; // From b2_authorize_account call
+            $auth_token  = $this->authToken; // From b2_authorize_account call
+            $bucket_id = $api_bucket_id;  // The ID of the bucket you want to upload to
             
+            $session = curl_init($api_url .  "/b2api/v1/b2_get_upload_url");
+            
+            // Add post fields
+            $data = array("bucketId" => $bucket_id);
+            $post_fields = json_encode($data);
+            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields); 
+            
+            // Add headers
+            $headers = array();
+            $headers[] = "Authorization: " . $auth_token;
+            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
+            
+            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
+            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
+            
+            $http_result = curl_exec($session); // Let's do this!
+
+            curl_close($session); // Clean up
+
+            $json              = json_decode($http_result);
+            $this->uploadToken = $json->authorizationToken; // Upload auth token
+
+            return $http_result; // Tell me about the rabbits, George!
         }
         
         //Hide File
@@ -222,8 +248,37 @@
         }
         
         //List upload file
-        public function b2_upload_file()
+        public function b2_upload_file($upload_url, $file_path)
         {
+            $auth_token  = $this->uploadToken; // From b2_get_upload_url call
             
+            $handle = fopen($file_path, 'r');
+            $read_file = fread($handle, filesize($file_path));
+
+            $file_name = basename($file_path);
+            $file_type = mime_content_type($file_path);
+            $file_hash = sha1_file($file_path);
+
+            $session = curl_init($upload_url);   
+            
+            // Add read file as post field
+            curl_setopt($session, CURLOPT_POSTFIELDS, $read_file); 
+            
+            // Add headers
+            $headers = array();
+            $headers[] = "Authorization: " . $auth_token;
+            $headers[] = "X-Bz-File-Name: " . $file_name;
+            $headers[] = "Content-Type: " . $file_type;
+            $headers[] = "X-Bz-Content-Sha1: " . $file_hash;
+            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
+            
+            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
+            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
+            
+            $http_result = curl_exec($session); // Let's do this!
+
+            curl_close($session); // Clean up
+
+            return $http_result; // Tell me about the rabbits, George!
         }
     }
