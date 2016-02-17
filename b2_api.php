@@ -8,250 +8,247 @@
      * @version dev-master
      *
      */
-    class b2_api
+
+    // Base function for further calls
+    function b2_call($call_url, $headers, $data = NULL) 
     {
+        $session = curl_init($call_url);
 
-        //Account Authorization
-        public function b2_authorize_account($acct_id, $app_key)
+        if(!empty($data)) // Check if POST data exists
         {
-            $this->account_id = $acct_id;
-            $application_key  = $app_key;
-            $credentials      = base64_encode($this->account_id . ":" . $application_key);
-            $url              = "https://api.backblaze.com/b2api/v1/b2_authorize_account";
-
-            $session = curl_init($url);
-
-            // Add headers
-            $headers   = array();
-            $headers[] = "Accept: application/json";
-            $headers[] = "Authorization: Basic " . $credentials;
-            curl_setopt($session, CURLOPT_HTTPHEADER, $headers);  // Add headers
-
-            curl_setopt($session, CURLOPT_HTTPGET, true);  // HTTP GET
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true); // Receive server response
-
-            $http_result = curl_exec($session); // Let's do this!
-            $error       = curl_error($session); //Error return
-            $http_code   = curl_getinfo($session, CURLINFO_HTTP_CODE); //Result type: 200, 404, 500, etc.
-
-            curl_close($session);
-
-            $json            = json_decode($http_result);
-            $this->apiUrl    = $json->apiUrl;
-            $this->authToken = $json->authorizationToken;
-
-            //Print result code if it doesn't equal 200
-            if ($http_code != 200)
+            if(is_array($data)) // Check if the data is an array
             {
-                return print $http_code;
-            } else
-            {
-                //Return results
-                return json_decode($http_result);
+                $data = json_encode($data); // Encode the data as JSON
             }
 
-
+            curl_setopt($session, CURLOPT_POST, true); // Make the request a POST
+            curl_setopt($session, CURLOPT_POSTFIELDS, $data); // Add the data to the request
         }
 
-        //Create Bucket
-        public function b2_create_bucket($api_bucket_name, $bucket_type)
+        else
         {
-            $account_id  = $this->account_id; // Obtained from your B2 account page
-            $api_url     = $this->apiUrl; // From b2_authorize_account call
+            curl_setopt($session, CURLOPT_HTTPGET, true); // Make the request a GET
+        }
+        
+        curl_setopt($session, CURLOPT_HTTPHEADER, $headers); // Include the headers
+        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
+        $http_result = curl_exec($session); // Execute the request
+        curl_close($session); // Clean up
+
+        return json_decode($http_result); // Return the result
+    }
+
+    class b2_api
+    {
+        // Account authorization
+        public function b2_authorize_account($account_id, $application_key)
+        {
+            $call_url        = "https://api.backblaze.com/b2api/v1/b2_authorize_account";
+            $account_id      = $account_id; 
+            $this->accountId = $account_id;
+            $application_key = $application_key;
+
+            $credentials = base64_encode($account_id.":".$application_key);
+
+            // Add headers
+            $headers = array(
+                "Accept: application/json",
+                "Authorization: Basic {$credentials}"
+            );
+
+            $result = b2_call($call_url, $headers);
+
+            $this->apiUrl    = $result->apiUrl; // Reuse upload URL for b2_upload_file
+            $this->authToken = $result->authorizationToken; // Reuse upload auth token for b2_upload_file
+
+            return $result; // Return the result
+        }
+
+        // Create bucket
+        public function b2_create_bucket($bucket_name, $bucket_type)
+        {
+            $call_url    = $this->apiUrl."/b2api/v1/b2_create_bucket";
+            $account_id  = $this->accountId; // Obtained from your B2 account page
             $auth_token  = $this->authToken; // From b2_authorize_account call
-            $bucket_name = $api_bucket_name; // 6 char min, 50 char max: letters, digits, - and _
+            $bucket_name = $bucket_name; // 6 char min, 50 char max: letters, digits, - and _
             $bucket_type = $bucket_type; // Either allPublic or allPrivate
 
-            $session = curl_init($api_url . "/b2api/v1/b2_create_bucket");
-
             // Add post fields
-            $data        = array("accountId" => $account_id, "bucketName" => $bucket_name, "bucketType" => $bucket_type);
-            $post_fields = json_encode($data);
-            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields);
+            $data = array(
+                "accountId" => $account_id,
+                "bucketName" => $bucket_name,
+                "bucketType" => $bucket_type
+            );
 
             // Add headers
-            $headers   = array();
-            $headers[] = "Authorization: " . $auth_token;
-            curl_setopt($session, CURLOPT_HTTPHEADER, $headers);
+            $headers = array(
+                "Authorization: {$auth_token}"
+            );
 
-            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
-
-            $http_result = curl_exec($session); // Let's do this!
-
-            curl_close($session); // Clean up
-
-            return json_decode($http_result); // Tell me about the rabbits, George!
+            $result = b2_call($call_url, $headers, $data);
+            return $result; // Return the result
         }
-        
-        //Delete Bucket
-        public function b2_delete_bucket($api_bucket_id)
+
+        // Delete bucket
+        public function b2_delete_bucket($bucket_id)
         {
-            $account_id  = $this->account_id; // Obtained from your B2 account page
-            $api_url     = $this->apiUrl; // From b2_authorize_account call
-            $auth_token  = $this->authToken; // From b2_authorize_account call
-            $bucket_id = $api_bucket_id;  // The ID of the bucket you want to delete
-            
-            $session = curl_init($api_url .  "/b2api/v1/b2_delete_bucket");
-            
+            $call_url   = $this->apiUrl."/b2api/v1/b2_delete_bucket";
+            $account_id = $this->accountId; // Obtained from your B2 account page
+            $auth_token = $this->authToken; // From b2_authorize_account call
+            $bucket_id  = $bucket_id;  // The ID of the bucket you want to delete
+
             // Add post fields
-            $data = array("accountId" => $account_id, "bucketId" => $bucket_id);
-            $post_fields = json_encode($data);
-            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields); 
-            
+            $data = array(
+                "accountId" => $account_id,
+                "bucketId" => $bucket_id
+            );
+
             // Add headers
-            $headers = array();
-            $headers[] = "Authorization: " . $auth_token;
-            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
-            
-            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
-            
-            $http_result = curl_exec($session); // Let's do this!
+            $headers = array(
+                "Authorization: {$auth_token}"
+            );
 
-            curl_close($session); // Clean up
-
-            return json_decode($http_result); // Tell me about the rabbits, George!
-            
+            $result = b2_call($call_url, $headers, $data);
+            return $result; // Return the result
         }
-        
-        //Delete file version
-        public function b2_delete_file_version($api_file_id, $api_file_name)
+
+        // Delete file version
+        public function b2_delete_file_version($file_id, $file_name)
         {
-            $api_url     = $this->apiUrl; // From b2_authorize_account call
-            $auth_token  = $this->authToken; // From b2_authorize_account call
-            $file_id     = $api_file_id;  // The ID of the file you want to delete
-            $file_name   = $api_file_name; // The file name of the file you want to delete
-            
-            $session = curl_init($api_url .  "/b2api/v1/b2_delete_file_version");
-            
+            $call_url   = $this->apiUrl."/b2api/v1/b2_delete_file_version";
+            $auth_token = $this->authToken; // From b2_authorize_account call
+            $file_id    = $api_file_id;  // The ID of the file you want to delete
+            $file_name  = $api_file_name; // The file name of the file you want to delete
+
             // Add post fields
-            $data = array("fileId" => $file_id, "fileName" => $file_name);
-            $post_fields = json_encode($data);
-            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields); 
-            
+            $data = array(
+                "fileId" => $file_id, 
+                "fileName" => $file_name
+            );
+
             // Add headers
-            $headers = array();
-            $headers[] = "Authorization: " . $auth_token;
-            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
-            
-            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
-            
-            $http_result = curl_exec($session); // Let's do this!
+            $headers = array(
+                "Authorization: {$auth_token}"
+            );
 
-            curl_close($session); // Clean up
-
-            return json_decode($http_result); // Tell me about the rabbits, George!
+            $result = b2_call($call_url, $headers, $data);
+            return $result; // Return the result
         }
-        
-        //Download file by ID
+
+        // Download file by ID
         public function b2_download_file_by_id()
         {
-            
+
         }
-        
-        //Download file by Name
+
+        // Download file by name
         public function b2_download_file_by_name()
         {
-            
+
         }
-        
-        //Get File Info
-        public function b2_get_file_info($api_file_id)
+
+        // Get file info
+        public function b2_get_file_info($file_id)
         {
-            $api_url     = $this->apiUrl; // From b2_authorize_account call
-            $auth_token  = $this->authToken; // From b2_authorize_account call
-            $file_id = $api_file_id; // The id of the file
-            $session = curl_init($api_url .  "/b2api/v1/b2_get_file_info");
-            
+            $call_url   = $this->apiUrl."/b2api/v1/b2_get_file_info";
+            $auth_token = $this->authToken; // From b2_authorize_account call
+            $file_id    = $file_id; // The id of the file
+
             // Add post fields
-            $data = array("fileId" => $file_id);
-            $post_fields = json_encode($data);
-            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields); 
-            
+            $data = array(
+                "fileId" => $file_id)
+            );
+
             // Add headers
-            $headers = array();
-            $headers[] = "Authorization: " . $auth_token;
-            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
-            
-            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
-            
-            $http_result = curl_exec($session); // Let's do this!
+            $headers = array(
+                "Authorization: {$auth_token}"
+            );
 
-            curl_close($session); // Clean up
-
-            return json_decode($http_result); // Tell me about the rabbits, George!
+            $result = b2_call($call_url, $headers, $data);
+            return $result; // Return the result
         }
-        
-        //Get upload URL
-        public function b2_get_upload_url($api_bucket_id)
+
+        // Get upload URL
+        public function b2_get_upload_url($bucket_id)
         {
-            $api_url     = $this->apiUrl; // From b2_authorize_account call
-            $auth_token  = $this->authToken; // From b2_authorize_account call
-            $bucket_id = $api_bucket_id;  // The ID of the bucket you want to upload to
-            
-            $session = curl_init($api_url .  "/b2api/v1/b2_get_upload_url");
-            
+            $call_url   = $this->apiUrl."/b2api/v1/b2_get_upload_url";
+            $auth_token = $this->authToken; // From b2_authorize_account call
+            $account_id = $this->accountId; // From b2_authorize_account call
+            $bucket_id  = $bucket_id;  // The ID of the bucket you want to upload to
+
             // Add post fields
-            $data = array("bucketId" => $bucket_id);
-            $post_fields = json_encode($data);
-            curl_setopt($session, CURLOPT_POSTFIELDS, $post_fields); 
-            
+            $data = array(
+                "bucketId" => $bucket_id
+            );
+
             // Add headers
-            $headers = array();
-            $headers[] = "Authorization: " . $auth_token;
-            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
-            
-            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
-            
-            $http_result = curl_exec($session); // Let's do this!
+            $headers = array(
+                "Authorization: {$auth_token}"
+            );
 
-            curl_close($session); // Clean up
+            $result = b2_call($call_url, $headers, $data);
 
-            $json              = json_decode($http_result);
-            $this->uploadToken = $json->authorizationToken; // Upload auth token
+            $this->uploadUrl   = $result->uploadUrl; // Reuse upload URL for b2_upload_file
+            $this->uploadToken = $result->authorizationToken; // Reuse upload auth token for b2_upload_file
 
-            return json_decode($http_result); // Tell me about the rabbits, George!
+            return $result; // Return the result
         }
-        
-        //Hide File
+
+        // Hide file
         public function b2_hide_file()
         {
-            
+
         }
-        
-        //List buckets
+
+        // List buckets
         public function b2_list_buckets()
         {
-            
+
         }
-        
-        //List file names
+
+        // List file names
         public function b2_list_file_names()
         {
-            
+
         }
-        
-        //List file versions
+
+        // List file versions
         public function b2_list_file_versions()
         {
-            
+
         }
-        
-        //List update bucket
-        public function b2_update_bucket()
+
+        // List update bucket
+        public function b2_update_bucket($bucket_id, $bucket_type)
         {
-            
+            $call_url    = $this->apiUrl."/b2api/v1/b2_update_bucket";
+            $auth_token  = $this->authToken; // From b2_authorize_account call
+            $account_id  = $this->accountId; // From b2_authorize_account call
+            $bucket_id   = $bucket_id;  // The ID of the bucket you want to upload to
+            $bucket_type = $bucket_type; // Type to change to, either allPublic or allPrivate
+
+            // Add post fields
+            $data = array(
+                "accountId" => $account_id,
+                "bucketId" => $bucket_id,
+                "bucketType" => $bucket_type
+            );
+
+            // Add headers
+            $headers = array(
+                "Authorization: {$auth_token}"
+            );
+
+            $result = b2_call($call_url, $headers, $data);
+            return $result; // Return the result
         }
-        
-        //List upload file
-        public function b2_upload_file($upload_url, $file_path)
+
+        // List upload file
+        public function b2_upload_file($file_path)
         {
-            $auth_token  = $this->uploadToken; // From b2_get_upload_url call
-            
+            $call_url   = $this->uploadUrl; // From b2_get_upload_url call
+            $auth_token = $this->uploadToken; // From b2_get_upload_url call
+
             $handle = fopen($file_path, 'r');
             $read_file = fread($handle, filesize($file_path));
 
@@ -259,26 +256,15 @@
             $file_type = mime_content_type($file_path);
             $file_hash = sha1_file($file_path);
 
-            $session = curl_init($upload_url);   
-            
-            // Add read file as post field
-            curl_setopt($session, CURLOPT_POSTFIELDS, $read_file); 
-            
             // Add headers
-            $headers = array();
-            $headers[] = "Authorization: " . $auth_token;
-            $headers[] = "X-Bz-File-Name: " . $file_name;
-            $headers[] = "Content-Type: " . $file_type;
-            $headers[] = "X-Bz-Content-Sha1: " . $file_hash;
-            curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
-            
-            curl_setopt($session, CURLOPT_POST, true); // HTTP POST
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);  // Receive server response
-            
-            $http_result = curl_exec($session); // Let's do this!
+            $headers = array(
+                "Authorization: {$auth_token}",
+                "X-Bz-File-Name: {$file_name}",
+                "Content-Type: {$file_type}",
+                "X-Bz-Content-Sha1: {$file_hash}"
+            );
 
-            curl_close($session); // Clean up
-
-            return json_decode($http_result); // Tell me about the rabbits, George!
+            $result = b2_call($call_url, $headers, $read_file);
+            return $result; // Return the result
         }
     }
