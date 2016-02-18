@@ -70,8 +70,8 @@
             $call_url    = $this->apiUrl."/b2api/v1/b2_create_bucket";
             $account_id  = $this->accountId; // Obtained from your B2 account page
             $auth_token  = $this->authToken; // From b2_authorize_account call
-            $bucket_name = $bucket_name; // 6 char min, 50 char max: letters, digits, - and _
-            $bucket_type = $bucket_type; // Either allPublic or allPrivate
+            $bucket_name = $bucket_name; // The new bucket's name. 6 char min, 50 char max, letters, digits, - and _ are allowed
+            $bucket_type = $bucket_type; // Type to change to, either allPublic or allPrivate
 
             // Add post fields
             $data = array(
@@ -95,7 +95,7 @@
             $call_url   = $this->apiUrl."/b2api/v1/b2_delete_bucket";
             $account_id = $this->accountId; // Obtained from your B2 account page
             $auth_token = $this->authToken; // From b2_authorize_account call
-            $bucket_id  = $bucket_id;  // The ID of the bucket you want to delete
+            $bucket_id  = $bucket_id; // The ID of the bucket you want to delete
 
             // Add post fields
             $data = array(
@@ -117,8 +117,8 @@
         {
             $call_url   = $this->apiUrl."/b2api/v1/b2_delete_file_version";
             $auth_token = $this->authToken; // From b2_authorize_account call
-            $file_id    = $api_file_id;  // The ID of the file you want to delete
-            $file_name  = $api_file_name; // The file name of the file you want to delete
+            $file_id    = $file_id; // The ID of the file you want to delete
+            $file_name  = $file_name; // The file name of the file you want to delete
 
             // Add post fields
             $data = array(
@@ -152,11 +152,11 @@
         {
             $call_url   = $this->apiUrl."/b2api/v1/b2_get_file_info";
             $auth_token = $this->authToken; // From b2_authorize_account call
-            $file_id    = $file_id; // The id of the file
+            $file_id    = $file_id; // The ID of the file you wish to recieve the info of
 
             // Add post fields
             $data = array(
-                "fileId" => $file_id)
+                "fileId" => $file_id
             );
 
             // Add headers
@@ -174,7 +174,7 @@
             $call_url   = $this->apiUrl."/b2api/v1/b2_get_upload_url";
             $auth_token = $this->authToken; // From b2_authorize_account call
             $account_id = $this->accountId; // From b2_authorize_account call
-            $bucket_id  = $bucket_id;  // The ID of the bucket you want to upload to
+            $bucket_id  = $bucket_id; // The ID of the bucket you want to upload to
 
             // Add post fields
             $data = array(
@@ -224,7 +224,7 @@
             $call_url    = $this->apiUrl."/b2api/v1/b2_update_bucket";
             $auth_token  = $this->authToken; // From b2_authorize_account call
             $account_id  = $this->accountId; // From b2_authorize_account call
-            $bucket_id   = $bucket_id;  // The ID of the bucket you want to upload to
+            $bucket_id   = $bucket_id; // The ID of the bucket you want to update
             $bucket_type = $bucket_type; // Type to change to, either allPublic or allPrivate
 
             // Add post fields
@@ -248,6 +248,7 @@
         {
             $call_url   = $this->uploadUrl; // From b2_get_upload_url call
             $auth_token = $this->uploadToken; // From b2_get_upload_url call
+            $file_path  = $file_path; // The path to the file you wish to upload
 
             $handle = fopen($file_path, 'r');
             $read_file = fread($handle, filesize($file_path));
