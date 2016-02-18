@@ -64,6 +64,13 @@
             return $result; // Return the result
         }
 
+        // Cancel large file
+        // Part of the large files API, not functional at time of writing
+        public function b2_cancel_large_file()
+        {
+
+        }
+
         // Create bucket
         public function b2_create_bucket($bucket_name, $bucket_type)
         {
@@ -147,6 +154,13 @@
 
         }
 
+        // Finish large file
+        // Part of the large files API, not functional at time of writing
+        public function b2_finish_large_file()
+        {
+
+        }
+
         // Get file info
         public function b2_get_file_info($file_id)
         {
@@ -218,6 +232,27 @@
 
         }
 
+        // List parts
+        // Part of the large files API, not functional at time of writing
+        public function b2_list_parts()
+        {
+
+        }
+
+        // List unfinished large files
+        // Part of the large files API, not functional at time of writing
+        public function b2_list_unfinished_large_files()
+        {
+
+        }
+
+        // Start large file
+        // Part of the large files API, not functional at time of writing
+        public function b2_start_large_file()
+        {
+
+        }
+
         // List update bucket
         public function b2_update_bucket($bucket_id, $bucket_type)
         {
@@ -267,5 +302,12 @@
 
             $result = b2_call($call_url, $headers, $read_file);
             return $result; // Return the result
+        }
+
+        // Upload part
+        // Part of the large files API, not functional at time of writing
+        public function b2_upload_part()
+        {
+
         }
     }
