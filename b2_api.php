@@ -68,8 +68,9 @@
 
             $result = b2_call($call_url, $headers);
 
-            $this->apiUrl    = $result->apiUrl; // Reuse upload URL for b2_upload_file
-            $this->authToken = $result->authorizationToken; // Reuse upload auth token for b2_upload_file
+            $this->apiUrl      = $result->apiUrl; // Reuse upload URL for b2_upload_file
+            $this->authToken   = $result->authorizationToken; // Reuse upload auth token for b2_upload_file
+            $this->downloadUrl = $result->downloadUrl; // We'll use this later on in the download calls 
 
             return $result; // Return the result
         }
@@ -153,19 +154,16 @@
         }
 
         // Download file by ID
-        public function b2_download_file_by_id($download_url, $file_id)
+        public function b2_download_file_by_id($file_id)
         {
-            $call_url     = $download_url."/b2api/v1/b2_download_file_by_id?fileId=".$file_id;
-            $download_url = $download_url; // The URL of the download server. Something similar to https://f001.backblaze.com
-            $file_id      = $file_id; // The ID of the file you wish to download
+            $call_url   = $this->downloadUrl."/b2api/v1/b2_download_file_by_id?fileId=".$file_id;
+            $auth_token = $this->authToken; // From b2_authorize_account call
+            $file_id    = $file_id; // The ID of the file you wish to download
 
-            $headers = array();
-
-            if(!empty($this->authToken)) // Check to see if authentication token exists
-            {
-                $auth_token = $this->authToken; // From b2_authorize_account call, only required if bucket is private
-                $headers[] = "Authorization: {$auth_token}";
-            }
+            // Add headers
+            $headers = array(
+                "Authorization: {$auth_token}"
+            );
 
             $result = b2_call($call_url, $headers);
             return $result; // Return the result
