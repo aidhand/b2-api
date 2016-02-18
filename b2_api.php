@@ -170,9 +170,20 @@
         }
 
         // Download file by name
-        public function b2_download_file_by_name()
+        public function b2_download_file_by_name($bucket_name, $file_name)
         {
+            $call_url    = $this->downloadUrl."/file/".$bucket_name."/".$file_name;
+            $auth_token  = $this->authToken; // From b2_authorize_account call
+            $bucket_name = $bucket_name; // The name of the bucket you wish to download from
+            $file_name   = $file_name; // The name of the file you wish to download
 
+            // Add headers
+            $headers = array(
+                "Authorization: {$auth_token}"
+            );
+
+            $result = b2_call($call_url, $headers);
+            return $result; // Return the result
         }
 
         // Finish large file

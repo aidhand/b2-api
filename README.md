@@ -72,6 +72,17 @@ b2_download_file_by_id($file_id)
 $file_id // The ID of the file you wish to download
 ```
 
+#### b2_download_file_by_name
+
+NOTE: Partial downloads are not supported at this time
+
+```php
+b2_download_file_by_name($bucket_name, $file_name)
+
+$bucket_name // The name of the bucket you wish to download from
+$file_name // The name of the file you wish to download
+```
+
 #### b2_get_file_info
 ```php
 b2_get_file_info($file_id)
