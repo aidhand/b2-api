@@ -35,7 +35,17 @@
         $http_result = curl_exec($session); // Execute the request
         curl_close($session); // Clean up
 
-        return json_decode($http_result); // Return the result
+        json_decode($http_result);
+
+        if(json_last_error() == JSON_ERROR_NONE || json_last_error() == 0) // Check if the response is JSON
+        {
+            return json_decode($http_result); // Return the result, as an array.
+        }
+        
+        else
+        {
+            return $http_result; // Return the result as it was recieved
+        }
     }
 
     class b2_api
@@ -80,7 +90,7 @@
             $bucket_name = $bucket_name; // The new bucket's name. 6 char min, 50 char max, letters, digits, - and _ are allowed
             $bucket_type = $bucket_type; // Type to change to, either allPublic or allPrivate
 
-            // Add post fields
+            // Add POST fields
             $data = array(
                 "accountId" => $account_id,
                 "bucketName" => $bucket_name,
@@ -104,7 +114,7 @@
             $auth_token = $this->authToken; // From b2_authorize_account call
             $bucket_id  = $bucket_id; // The ID of the bucket you want to delete
 
-            // Add post fields
+            // Add POST fields
             $data = array(
                 "accountId" => $account_id,
                 "bucketId" => $bucket_id
@@ -127,7 +137,7 @@
             $file_id    = $file_id; // The ID of the file you want to delete
             $file_name  = $file_name; // The file name of the file you want to delete
 
-            // Add post fields
+            // Add POST fields
             $data = array(
                 "fileId" => $file_id, 
                 "fileName" => $file_name
@@ -143,9 +153,22 @@
         }
 
         // Download file by ID
-        public function b2_download_file_by_id()
+        public function b2_download_file_by_id($download_url, $file_id)
         {
+            $call_url     = $download_url."/b2api/v1/b2_download_file_by_id?fileId=".$file_id;
+            $download_url = $download_url; // The URL of the download server. Something similar to https://f001.backblaze.com
+            $file_id      = $file_id; // The ID of the file you wish to download
 
+            $headers = array();
+
+            if(!empty($this->authToken)) // Check to see if authentication token exists
+            {
+                $auth_token = $this->authToken; // From b2_authorize_account call, only required if bucket is private
+                $headers[] = "Authorization: {$auth_token}";
+            }
+
+            $result = b2_call($call_url, $headers);
+            return $result; // Return the result
         }
 
         // Download file by name
@@ -168,7 +191,7 @@
             $auth_token = $this->authToken; // From b2_authorize_account call
             $file_id    = $file_id; // The ID of the file you wish to recieve the info of
 
-            // Add post fields
+            // Add POST fields
             $data = array(
                 "fileId" => $file_id
             );
@@ -190,7 +213,7 @@
             $account_id = $this->accountId; // From b2_authorize_account call
             $bucket_id  = $bucket_id; // The ID of the bucket you want to upload to
 
-            // Add post fields
+            // Add POST fields
             $data = array(
                 "bucketId" => $bucket_id
             );
@@ -262,7 +285,7 @@
             $bucket_id   = $bucket_id; // The ID of the bucket you want to update
             $bucket_type = $bucket_type; // Type to change to, either allPublic or allPrivate
 
-            // Add post fields
+            // Add POST fields
             $data = array(
                 "accountId" => $account_id,
                 "bucketId" => $bucket_id,
