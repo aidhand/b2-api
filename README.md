@@ -64,7 +64,7 @@ $file_name // The file name of the file you want to delete
 
 #### b2_download_file_by_id
 
-NOTE: Partial downloads are not supported at this time
+NOTE: Downloads are not supported at this time
 
 ```php
 b2_download_file_by_id($file_id)
@@ -74,7 +74,7 @@ $file_id // The ID of the file you wish to download
 
 #### b2_download_file_by_name
 
-NOTE: Partial downloads are not supported at this time
+NOTE: Downloads are not supported at this time
 
 ```php
 b2_download_file_by_name($bucket_name, $file_name)

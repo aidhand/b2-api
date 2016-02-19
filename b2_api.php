@@ -154,6 +154,7 @@
         }
 
         // Download file by ID
+        /*
         public function b2_download_file_by_id($file_id)
         {
             $call_url   = $this->downloadUrl."/b2api/v1/b2_download_file_by_id?fileId=".$file_id;
@@ -168,8 +169,10 @@
             $result = b2_call($call_url, $headers);
             return $result; // Return the result
         }
+        */
 
-        // Download file by name
+        // Download file by name 
+        /*
         public function b2_download_file_by_name($bucket_name, $file_name)
         {
             $call_url    = $this->downloadUrl."/file/".$bucket_name."/".$file_name;
@@ -185,6 +188,7 @@
             $result = b2_call($call_url, $headers);
             return $result; // Return the result
         }
+        */
 
         // Finish large file
         // Part of the large files API, not functional at time of writing
