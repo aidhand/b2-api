@@ -136,7 +136,7 @@ $options = array( // None of these options are required but may be used
 
 #### b2_list_file_versions
 ```php
-b2_list_file_versions($api_url, $auth_token, $bucket_id, $options = NULL)
+b2_list_file_versions($api_url, $auth_token, $bucket_id, [$options])
 
 $api_url // The API URL, obtained from the b2_authorize_account call
 $auth_token // The authentication token, obtained from the b2_authorize_account call
