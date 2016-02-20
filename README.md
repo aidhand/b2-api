@@ -3,15 +3,35 @@ Forked by [Aidhan Dossel](https://aidhan.net/), originally by [Dan Rovito](https
 
 This is a PHP wrapper for the [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html) API.
 
-This wrapper is in active development.
+This wrapper is in alpha and should not be used on production sites.
 
 ##Usage
+1. Clone the repository
 
-Add to your composer.json
+```
+git clone https://github.com/UKn0Me/b2-api.git
+```
+
+2. Include b2_api.php when required
 
 ```php
-  "ukn0me/b2-api": "dev-master"
+include "/path/to/b2_api.php"; // Include the API wrapper
 ```
+
+OR
+
+For you folks that use Composer
+
+```
+  composer require ukn0me/b2-api
+```
+
+####Requirements
+- PHP 5.3.3+ (works on 7.0)
+- php-curl
+- php-json
+- php-mbstring
+If you're using Composer, it should get all the dependencies figured out but you still need to have the PHP extensions installed.
 
 ###Sample code
 You need to pass your Account ID and Application key from your B2 account to get your authorization response. To call the authorization function do the following:
@@ -28,7 +48,7 @@ The response will contain the following as an array:
 - apiUrl
 - downloadUrl
 
-###Calls
+##Calls
 
 Currently only the following API calls are supported, see the examples directory for full examples or see [B2 API](https://www.backblaze.com/b2/docs/) for more information about each call.
 
